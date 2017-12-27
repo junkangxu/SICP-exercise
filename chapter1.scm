@@ -84,3 +84,32 @@
   (if (= x 0)
       0
       y))
+
+(test 0 (p))
+; applicative-order: infinite loop
+; normal-order: 0 == 0 => true => return 0
+
+
+
+;;;;;;;;;
+;;;Ex 1.6
+;;;;;;;;;
+(define (new-if predicate then-clause else-clause)
+  (cond (predicate then-clause)
+        (else-clause)))
+
+(define (sqrt-iter guess x)
+  (new-if (good-enough? guess x)
+          guess
+          (sqrt-iter (improve guess x) x)))
+; The new-if have to evaluate the else-clause which is in the iteration
+; therefore, it will keep evaluate permanently
+
+
+
+;;;;;;;;;
+;;;Ex 1.7
+;;;;;;;;;
+(define (good-enough? guess x)
+  (< (abs(- (improve guess x) guess))
+     (* 0.001 guess)))
