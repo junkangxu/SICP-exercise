@@ -350,3 +350,9 @@
                       (enumerate-interval 1 (- j 1))))
                  (enumerate-interval 1 (- i 1))))
             (enumerate-interval 1 n))))
+
+
+
+;;;;;;;;;;
+;;;Ex 2.42
+;;;;;;;;;;
