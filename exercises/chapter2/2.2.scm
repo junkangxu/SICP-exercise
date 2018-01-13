@@ -356,3 +356,164 @@
 ;;;;;;;;;;
 ;;;Ex 2.42
 ;;;;;;;;;;
+; Full code in the link below
+; http://community.schemewiki.org/?sicp-ex-2.42
+
+
+
+;;;;;;;;;;
+;;;Ex 2.43
+;;;;;;;;;;
+; exchanging the order of the mapping reduces the duplicated work
+
+
+
+;;;;;;;;;;
+;;;Ex 2.44
+;;;;;;;;;;
+(define (up-split painter n)
+  (if (= n 0)
+      painter
+      (let ((smaller (up-split painter (- n 1))))
+        (beside painter (below smaller smaller)))))
+
+
+
+;;;;;;;;;;
+;;;Ex 2.45
+;;;;;;;;;;
+(define (split f g)
+  (define (rec painter n)
+    (if (= n 1)
+        painter
+        (let ((smaller (rec painter (- n 1))))
+          (f painter (g smaller smaller)))))
+  rec)
+
+
+
+;;;;;;;;;;
+;;;Ex 2.46
+;;;;;;;;;;
+(define (make-vect x y) (cons x y))
+(define (xcor-vect vec) (car vec))
+(define (ycor-vect vec) (cdr vec))
+
+(define (add-vect v1 v2)
+  (make-vect (+ (xcor-vect v1) (xcor-vect v2))
+             (+ (ycor-vect v1) (ycor-vect v2))))
+
+(define (sub-vect v1 v2)
+  (make-vect (- (xcor-vect v1) (xcor-vect v2))
+             (- (ycor-vect v1) (ycor-vect v2))))
+
+(define (scale-vect s vec)
+  (make-vect (* s (xcor-vect vec))
+             (* s (ycor-vect vec))))
+
+
+
+;;;;;;;;;;
+;;;Ex 2.47
+;;;;;;;;;;
+; First
+(define (make-frame origin edge1 edge2)
+  (list origin edge1 edge2))
+
+(define (frame-origin x) (car x))
+(define (frame-edge1 x) (cadr x))
+(define (frame-edge2 x) (caddr x))
+; Second
+(define (make-frame origin edge1 edge2)
+  (cons origin (cons edge1 edge2)))
+
+(define (frame-origin x) (car x))
+(define (frame-edge1 x) (cadr x))
+(define (frame-edge2 x) (cddr f))
+
+
+
+;;;;;;;;;;
+;;;Ex 2.48
+;;;;;;;;;;
+(define make-segment cons)
+(define start-segment car)
+(define end-segment cdr)
+
+
+
+;;;;;;;;;;
+;;;Ex 2.49
+;;;;;;;;;;
+; various solutions in link below
+; http://community.schemewiki.org/?sicp-ex-2.49
+
+
+
+;;;;;;;;;;
+;;;Ex 2.50
+;;;;;;;;;;
+(define (flip-horiz painter)
+  (transform-painter painter
+                     (make-vect 1.0 0.0)
+                     (make-vect 0.0 0.0)
+                     (make-vect 1.0 1.0)))
+
+(define (rotate-180 painter)
+  (transform-painter painter
+                     (make-vect 1.0 1.0)
+                     (make-vect 0.0 1.0)
+                     (make-vect 1.0 0.0)))
+
+(define (rotate-270 painter)
+  (transform-painter painter
+                     (make-vect 0.0 1.0)
+                     (make-vect 0.0 0.0)
+                     (make-vect 1.0 1.0)))
+
+
+
+;;;;;;;;;;
+;;;Ex 2.51
+;;;;;;;;;;
+(define (below painter1 painter2)
+   (let ((split-point (make-vect 0.0 0.5)))
+     (let ((paint-bottom
+            (transform-painter painter1
+                               (make-vect 0.0 0.0)
+                               (make-vect 1.0 0.0)
+                               split-point))
+           (paint-top
+            (transform-painter painter2
+                               split-point
+                               (make-vect 1.0 0.5)
+                               (make-vect 0.0 1.0))))
+       (lambda (frame)
+         (paint-bottom frame)
+         (paint-top frame)))))
+
+(define (below-2 painter1 painter2)
+  (rotate270 (beside (rotate90 painter2) (rotate90 painter1))))
+
+
+
+;;;;;;;;;;
+;;;Ex 2.52
+;;;;;;;;;;
+; a)
+(define wave
+  (segments->painter
+    (list (make-segment
+      (make-vect 0.44 0.7) (make-vect 0.51 0.7)))))
+
+; b)
+(define (corner-split painter n)
+  (if (= n 0)
+      painter
+      (beside (below painter (up-split painter (- n 1)))
+              (below (right-split painter (- n 1)) (corner-split painter (- n 1))))))
+
+; c)
+(define (square-limit painter n)
+  (let ((combine4 (square-of-four flip-vert rotate-180 identity flip-horiz)))
+    (combine4 (corner-split painter n))))
