@@ -29,3 +29,27 @@
 (car ''abracadabra)
 ; ''abracadabra => a literal of 'abracadabra
 ; therefore first element of 'abracadabra is ', which is a quote
+
+
+
+;;;;;;;;;;
+;;;Ex 2.56
+;;;;;;;;;;
+(define (exponentiation? exp)
+  (and (pair? exp) (eq? (car exp) '**)))
+
+(define (base exp) (cadr exp))
+
+(define (exponent exp) (caddr exp))
+
+(define (make-exponentiation base exp)
+  (cond ((=number? base 1) 1)
+        ((=number? exp 1) base)
+        ((=number? exp 0) 1)
+        (else (list '** base exp))))
+
+
+
+;;;;;;;;;;
+;;;Ex 2.57
+;;;;;;;;;;
